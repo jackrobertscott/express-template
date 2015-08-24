@@ -36,7 +36,6 @@ app.use(lessMiddleware(config.paths.public));
 // Load static files
 app.use(express.static(config.paths.public));
 app.use(express.static(config.paths.bower_components));
-app.use('/semantic', express.static(config.paths.semantic));
 
 //////////////////////////
 // CONTROLLERS / ROUTES //

@@ -6,6 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var lessMiddleware = require('less-middleware');
+var wrench = require('wrench');
 
 // Get express app
 var app = module.exports = express();
@@ -33,12 +34,14 @@ app.use(cookieParser());
 app.use(lessMiddleware(config.paths.public));
 app.use(express.static(config.paths.public));
 
-////////////
-// ROUTES //
-////////////
+//////////////////////////
+// CONTROLLERS / ROUTES //
+//////////////////////////
 
-app.use('/', require('./controllers/index'));
-app.use('/users', require('./controllers/users'));
+wrench.readdirSyncRecursive(config.paths.controllers)
+  .map(function(file) {
+    require(path.join(config.paths.controllers, file))(app);
+  });
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {

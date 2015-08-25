@@ -22,5 +22,10 @@ module.exports = {
     // Dependencies
     bower_components: path.join(__dirname, 'bower_components'),
     semantic: path.join(__dirname, 'semantic')
+  },
+
+  firebase: {
+    url: 'https://angular-firebase-cms.firebaseio.com',
+    siteId: '-Jvt4vs1lBrZQu--HWFG'
   }
 };

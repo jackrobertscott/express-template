@@ -42,7 +42,7 @@ app.use(express.static(config.paths.bower_components));
 //////////////////////////
 
 wrench.readdirSyncRecursive(config.paths.controllers)
-  .map(function(file) {
+  .forEach(function(file) {
     require(path.join(config.paths.controllers, file))(app);
   });
 

@@ -1,7 +1,9 @@
 doctype html
 html
   head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    block title
+      title Express Template
+    include stylesheets.jade
   body
     block content
+    include javascripts.jade

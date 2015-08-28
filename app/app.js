@@ -5,7 +5,6 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var lessMiddleware = require('less-middleware');
 var wrench = require('wrench');
 
 // Get express app
@@ -31,7 +30,6 @@ app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(cookieParser());
-app.use(lessMiddleware(config.paths.public));
 
 // Load static files
 app.use(express.static(config.paths.public));

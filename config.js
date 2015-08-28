@@ -20,7 +20,7 @@ module.exports = {
     stylesheets: path.join(__dirname, 'public', 'stylesheets'),
 
     // Build
-    build: path.join(__dirname, 'build'),
+    build: path.join(__dirname, 'public', 'dist'),
 
     // Dependencies
     bower_components: path.join(__dirname, 'bower_components'),

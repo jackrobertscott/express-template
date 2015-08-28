@@ -1,9 +1,9 @@
 var config = require('./config');
 var path = require('path');
 var gulp = require('gulp');
-var gutil = require('gulp-util');
+var util = require('gulp-util');
 // Server
-var livereload = require('gulp-livereload');
+var browserSync = require('browser-sync').create();
 var nodemon = require('gulp-nodemon');
 var jshint = require('gulp-jshint');
 // Build
@@ -19,40 +19,34 @@ var autoprefixer = require('gulp-autoprefixer');
 gulp.task('default', [
   'lint',
   'build',
-  'watch'
+  'serve'
 ]);
 
 gulp.task('lint', function() {
   return gulp.src([
       path.join(config.paths.app, '**/*.js'),
-      path.join(config.paths.javascripts, '**/*.js'),
+      path.join(config.paths.js, '**/*.js'),
     ])
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
 });
 
-gulp.task('build', ['clean', 'styles', 'scripts']);
+gulp.task('build', [
+  'clean',
+  'less',
+  'js'
+]);
 
 gulp.task('clean', function() {
-  return gulp.src(config.paths.build, {
+  return gulp.src(config.paths.min, {
       read: false
     })
     .pipe(rimraf());
 });
 
-gulp.task('scripts', function() {
-  return gulp.src(path.join(config.paths.javascripts, '**/*.js'))
-    .pipe(concat('main.js'))
-    .pipe(uglify())
-    .pipe(rename({
-      suffix: '.min'
-    }))
-    .pipe(gulp.dest(config.paths.build));
-});
-
-gulp.task('styles', function() {
-  return gulp.src(path.join(config.paths.stylesheets, 'style.less'))
-    .pipe(less().on('error', gutil.log))
+gulp.task('less', function() {
+  return gulp.src(path.join(config.paths.less, 'style.less'))
+    .pipe(less().on('error', util.log))
     .pipe(autoprefixer({
       browsers: ['last 2 versions'],
       cascade: false
@@ -61,9 +55,41 @@ gulp.task('styles', function() {
     .pipe(rename({
       suffix: '.min'
     }))
-    .pipe(gulp.dest(config.paths.build));
+    .pipe(gulp.dest(config.paths.min));
+});
+
+gulp.task('js', function() {
+  return gulp.src(path.join(config.paths.js, '**/*.js'))
+    .pipe(concat('main.js'))
+    .pipe(uglify())
+    .pipe(rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest(config.paths.min));
+});
+
+gulp.task('serve', [
+  'nodemon',
+  'browser-sync',
+  'watch'
+]);
+
+gulp.task('nodemon', function() {
+  nodemon({
+    script: './bin/www'
+  });
+});
+
+gulp.task('browser-sync', function() {
+  browserSync.init({
+    proxy: 'localhost:' + config.port
+  });
 });
 
 gulp.task('watch', function() {
-  gulp.watch(path.join(config.paths.public, '**/*.less'), ['styles']);
+  gulp.watch(path.join(config.paths.less, '**/*.less'), ['less']);
+  gulp.watch(path.join(config.paths.app, '**/*'), function() {
+    // Ensure that nodemon reloads before browser refresh
+    setTimeout(browserSync.reload, 2000);
+  });
 });

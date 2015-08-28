@@ -2,7 +2,8 @@ var path = require('path');
 
 module.exports = {
   // Server
-  port: process.env.PORT || 3000,
+  // Don't set port to 3000 or the browserSync will fail
+  port: process.env.PORT || 5000,
 
   // Paths
   paths: {
@@ -15,12 +16,11 @@ module.exports = {
 
     // Public
     public: path.join(__dirname, 'public'),
-    images: path.join(__dirname, 'public', 'images'),
-    javascripts: path.join(__dirname, 'public', 'javascripts'),
-    stylesheets: path.join(__dirname, 'public', 'stylesheets'),
-
-    // Build
-    build: path.join(__dirname, 'public', 'dist'),
+    img: path.join(__dirname, 'public', 'img'),
+    js: path.join(__dirname, 'public', 'js'),
+    css: path.join(__dirname, 'public', 'css'),
+    less: path.join(__dirname, 'public', 'less'),
+    min: path.join(__dirname, 'public', 'min'),
 
     // Dependencies
     bower_components: path.join(__dirname, 'bower_components'),

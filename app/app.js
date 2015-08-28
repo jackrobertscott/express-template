@@ -42,7 +42,6 @@ app.use(express.static(config.paths.bower_components));
 wrench.readdirSyncRecursive(config.paths.controllers)
   .forEach(function(file) {
     if ((/\.js$/i).test(file)) {
-      console.log(file);
       require(path.join(config.paths.controllers, file))(app);
     }
   });

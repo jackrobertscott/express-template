@@ -7,8 +7,7 @@ var ref = (new Firebase(config.firebase.url)).child('pages');
 module.exports = {
   find: find,
   findBySite: findBySite,
-  findById: findById,
-  findByUrl: findByUrl
+  findById: findById
 };
 
 function find(cb) {
@@ -43,18 +42,6 @@ function findById(pageId, cb) {
   });
 
   ref.child(pageId)
-    .once('value', function(snapshot) {
-      cb(null, snapshotToEntity(snapshot));
-    }, cb);
-}
-
-function findByUrl(url, cb) {
-  if (!url) return cb({
-    message: 'No url passed to findByUrl function.'
-  });
-
-  ref.orderByChild('url')
-    .equalTo(url)
     .once('value', function(snapshot) {
       cb(null, snapshotToEntity(snapshot));
     }, cb);

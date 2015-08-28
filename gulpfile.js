@@ -42,7 +42,7 @@ gulp.task('clean', function() {
 
 gulp.task('scripts', function() {
   return gulp.src(path.join(config.paths.javascripts, '**/*.js'))
-    .pipe(concat('scripts.js'))
+    .pipe(concat('main.js'))
     .pipe(uglify())
     .pipe(rename({
       suffix: '.min'

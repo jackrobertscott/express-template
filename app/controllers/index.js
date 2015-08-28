@@ -4,7 +4,7 @@ var router = express.Router();
 var Page = require('../models/page');
 var _ = require('lodash');
 
-module.exports = function PageController(app) {
+module.exports = function IndexController(app) {
   app.use('/', router);
 };
 

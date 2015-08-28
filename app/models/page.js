@@ -2,7 +2,7 @@ var config = require('../../config');
 var Firebase = require('firebase');
 var _ = require('lodash');
 
-var ref = (new Firebase(config.firebase.url)).child('pages');
+var ref = (new Firebase(config.firebase.url)).child(config.firebase.entities.pages);
 
 module.exports = {
   find: find,

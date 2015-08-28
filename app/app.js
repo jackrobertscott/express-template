@@ -41,7 +41,10 @@ app.use(express.static(config.paths.bower_components));
 
 wrench.readdirSyncRecursive(config.paths.controllers)
   .forEach(function(file) {
-    require(path.join(config.paths.controllers, file))(app);
+    if ((/\.js$/i).test(file)) {
+      console.log(file);
+      require(path.join(config.paths.controllers, file))(app);
+    }
   });
 
 // Catch 404 and forward to error handler

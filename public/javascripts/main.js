@@ -1,3 +1,3 @@
 ;(function() {
-  // code...
+  console.log('client loaded');
 })();

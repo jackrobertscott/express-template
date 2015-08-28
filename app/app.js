@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 
 // Load static files
-app.use(express.static(config.paths.public));
+app.use(express.static(config.paths.build));
 app.use(express.static(config.paths.bower_components));
 
 //////////////////////////

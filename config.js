@@ -4,6 +4,7 @@ module.exports = {
   // Server
   // Don't set port to 3000 or the browserSync will fail
   port: process.env.PORT || 5000,
+  main: './server.js',
 
   // Paths
   paths: {

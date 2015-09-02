@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-var config = require('../config');
-var app = require('../app/app');
+var config = require('./config');
+var app = require('./app/app');
 var debug = require('debug')('express-template:server');
 var http = require('http');
 

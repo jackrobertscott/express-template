@@ -17,9 +17,11 @@ module.exports = {
 
     // Public
     public: path.join(__dirname, 'public'),
+    tmp: path.join(__dirname, '.tmp'),
     img: path.join(__dirname, 'public', 'img'),
     js: path.join(__dirname, 'public', 'js'),
     css: path.join(__dirname, 'public', 'css'),
+    sass: path.join(__dirname, 'public', 'sass'),
     less: path.join(__dirname, 'public', 'less'),
     min: path.join(__dirname, 'public', 'min'),
 

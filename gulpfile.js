@@ -23,25 +23,56 @@ gulp.task('lint', function() {
 
 gulp.task('build', [
   'clean',
-  'less',
-  'js'
+  'js',
+  'styles'
 ]);
+
+gulp.task('styles', [
+  'css',
+  'sass',
+  'less'
+], function() {
+  return gulp.src(path.join(config.paths.min, '*.min.css'))
+    .pipe(plugins.concat('style.min.css'))
+    .pipe(gulp.dest(config.paths.min));
+});
 
 gulp.task('clean', function() {
   return del.sync(config.paths.min);
 });
 
+gulp.task('css', function() {
+  return gulp.src(path.join(config.paths.css, '**/*.css'))
+    .pipe(plugins.autoprefixer({
+      browsers: ['last 2 versions'],
+      cascade: false
+    }))
+    .pipe(plugins.concat('style.css.min.css'))
+    .pipe(plugins.minifyCss())
+    .pipe(gulp.dest(config.paths.min));
+});
+
+gulp.task('sass', function() {
+  return gulp.src(path.join(config.paths.sass, '**/*.{sass, scss}'))
+    .pipe(plugins.sass().on('error', plugins.util.log))
+    .pipe(plugins.autoprefixer({
+      browsers: ['last 2 versions'],
+      cascade: false
+    }))
+    .pipe(plugins.concat('style.sass.min.css'))
+    .pipe(plugins.minifyCss())
+    .pipe(gulp.dest(config.paths.min));
+});
+
 gulp.task('less', function() {
-  return gulp.src(path.join(config.paths.less, 'style.less'))
+  return gulp.src(path.join(config.paths.less, '**/*.less'))
     .pipe(plugins.less().on('error', plugins.util.log))
     .pipe(plugins.autoprefixer({
       browsers: ['last 2 versions'],
       cascade: false
     }))
+    .pipe(plugins.concat('style.less.min.css'))
     .pipe(plugins.minifyCss())
-    .pipe(plugins.rename({
-      suffix: '.min'
-    }))
     .pipe(gulp.dest(config.paths.min));
 });
 

@@ -7,13 +7,14 @@ var gulp = require('gulp');
 var plugins = require('gulp-load-plugins')();
 var del = require('del');
 var mergeStream = require('merge-stream');
+var runSequence = require('run-sequence');
 var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
 
-gulp.task('default', [
-  'build',
-  'serve'
-]);
+gulp.task('default', function() {
+  // Make sure build is finished before start serve
+  runSequence('build', 'serve');
+});
 
 gulp.task('build', [
   'clean',
@@ -38,7 +39,7 @@ gulp.task('lint', function() {
 gulp.task('scripts', function() {
   return gulp.src([
       path.join(config.paths.app, '*/scripts/*.js'),
-      path.join(config.paths.public, '**/*.js'),
+      path.join(config.paths.public, 'scripts/**/*.js'),
     ])
     .pipe(plugins.concat('main.js'))
     .pipe(gulp.dest(config.paths.dist))
@@ -52,16 +53,16 @@ gulp.task('scripts', function() {
 gulp.task('styles', function() {
   var stream = mergeStream();
 
-  if (config.paths.css) {
+  if (config.build.css) {
     stream.add(gulp.src([
       path.join(config.paths.app, '*/styles/*.css'),
-      path.join(config.paths.public, '*/styles/*.css')
+      path.join(config.paths.public, 'styles/**/*.css')
     ]));
   }
-  if (config.paths.sass) {
+  if (config.build.sass) {
     stream.add(gulp.src([
-        path.join(config.paths.styles, '*/styles/*.{sass, scss}'),
-        path.join(config.paths.public, '*/styles/*.{sass, scss}')
+        path.join(config.paths.app, '*/styles/*.{sass,scss}'),
+        path.join(config.paths.public, 'styles/**/*.{sass,scss}')
       ])
       .pipe(plugins.plumber(function(error) {
         plugins.util.beep();
@@ -70,10 +71,10 @@ gulp.task('styles', function() {
       }))
       .pipe(plugins.sass()));
   }
-  if (config.paths.less) {
+  if (config.build.less) {
     stream.add(gulp.src([
-        path.join(config.paths.styles, '*/styles/*.less'),
-        path.join(config.paths.public, '*/styles/*.less')
+        path.join(config.paths.app, '*/styles/*.less'),
+        path.join(config.paths.public, 'styles/**/*.less')
       ])
       .pipe(plugins.plumber(function(error) {
         plugins.util.beep();
@@ -97,30 +98,56 @@ gulp.task('styles', function() {
 });
 
 gulp.task('serve', [
-  'nodemon',
-  'browser-sync',
+  'browser-sync:nodemon',
   'watch:styles',
   'watch:browser-sync'
 ]);
 
-gulp.task('nodemon', function() {
-  plugins.nodemon({
-    script: config.main
-  });
-});
+/**
+ * BrowserSync without using nodemon.
+ */
+gulp.task('browser-sync', browserSyncInit);
 
-gulp.task('browser-sync', function() {
+/**
+ * BrowserSync with using nodemon.
+ */
+gulp.task('browser-sync:nodemon', ['nodemon'], browserSyncInit);
+
+function browserSyncInit() {
   browserSync.init({
     proxy: 'localhost:' + config.port
   });
+}
+
+gulp.task('nodemon', function(cb) {
+  plugins.nodemon({
+      script: config.main
+    })
+    .once('start', cb);
+});
+
+gulp.task('watch:scripts', function() {
+  gulp.watch([
+      path.join(config.paths.app, '*/scripts/*.js'),
+      path.join(config.paths.public, 'scripts/**/*.js'),
+    ], ['scripts'])
+    .on('change', reload);
 });
 
 gulp.task('watch:styles', function() {
-  gulp.watch(path.join(config.paths.app, '*/styles/*.{css, sass, scss, less}'), ['styles'], reload);
+  gulp.watch([
+      path.join(config.paths.app, '*/styles/*.{css,sass,scss,less}'),
+      path.join(config.paths.public, 'styles/**/*.{css,sass,scss,less}')
+    ], ['styles'])
+    .on('change', reload);
 });
 
 gulp.task('watch:browser-sync', function() {
-  gulp.watch(path.join(config.paths.app, '**/*'), function() {
+  gulp.watch([
+    path.join(config.paths.app, '**/*'),
+    '!' + path.join(config.paths.app, '*/scripts/*.js'),
+    '!' + path.join(config.paths.app, '*/styles/*.{css,sass,scss,less}')
+  ], function() {
     // Ensure that plugins.nodemon reloads before browser refresh
     setTimeout(reload, 2000);
   });

@@ -32,7 +32,7 @@ gulp.task('build', [
 ]);
 
 gulp.task('clean', function() {
-  return del.sync(config.paths.min);
+  return del.sync(config.paths.dist);
 });
 
 gulp.task('styles', function() {
@@ -43,33 +43,52 @@ gulp.task('styles', function() {
   }
   if (config.paths.sass) {
     stream.add(gulp.src(path.join(config.paths.sass, '**/*.{sass, scss}'))
-      .pipe(plugins.sass().on('error', plugins.util.log)));
+      .pipe(plugins.plumber(function(error) {
+        plugins.util.beep();
+        plugins.util.log(error);
+        this.emit('end'); // need this
+      }))
+      .pipe(plugins.sass()));
   }
   if (config.paths.less) {
     stream.add(gulp.src(path.join(config.paths.less, '**/*.less'))
-      .pipe(plugins.less().on('error', plugins.util.log)));
+      .pipe(plugins.plumber(function(error) {
+        plugins.util.beep();
+        plugins.util.log(error);
+        this.emit('end'); // need this
+      }))
+      .pipe(plugins.less()));
   }
 
   return stream.isEmpty() ? null : stream.pipe(plugins.autoprefixer({
       browsers: ['last 2 versions'],
       cascade: false
     }))
-    .pipe(plugins.concat('style.min.css'))
+    .pipe(plugins.concat('style.css'))
+    .pipe(gulp.dest(config.paths.dist))
     .pipe(plugins.minifyCss())
-    .pipe(gulp.dest(config.paths.min));
+    .pipe(plugins.rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest(config.paths.dist));
 });
 
 gulp.task('scripts', function() {
   return gulp.src(path.join(config.paths.js, '**/*.js'))
-    .pipe(plugins.concat('main.min.js'))
+    .pipe(plugins.concat('main.js'))
+    .pipe(gulp.dest(config.paths.dist))
     .pipe(plugins.uglify())
-    .pipe(gulp.dest(config.paths.min));
+    .pipe(plugins.rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest(config.paths.dist));
 });
 
 gulp.task('serve', [
   'nodemon',
   'browser-sync',
-  'watch'
+  'watch:styles',
+  'watch:browser-sync'
 ]);
 
 gulp.task('nodemon', function() {
@@ -84,8 +103,17 @@ gulp.task('browser-sync', function() {
   });
 });
 
-gulp.task('watch', function() {
-  gulp.watch(path.join(config.paths.less, '**/*.less'), ['less']);
+gulp.task('watch:styles', function() {
+  var paths = [];
+
+  if (config.paths.css) paths.push(path.join(config.paths.css, '**/*.css'));
+  if (config.paths.sass) paths.push(path.join(config.paths.sass, '**/*.{sass, scss}'));
+  if (config.paths.less) paths.push(path.join(config.paths.less, '**/*.less'));
+
+  gulp.watch(paths, ['styles']);
+});
+
+gulp.task('watch:browser-sync', function() {
   gulp.watch(path.join(config.paths.app, '**/*'), function() {
     // Ensure that plugins.nodemon reloads before browser refresh
     setTimeout(reload, 2000);

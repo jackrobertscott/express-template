@@ -17,10 +17,9 @@ module.exports = {
 
     // Public
     public: path.join(__dirname, 'public'),
-    tmp: path.join(__dirname, '.tmp'),
+    dist: path.join(__dirname, 'public', 'dist'),
     img: path.join(__dirname, 'public', 'img'),
     js: path.join(__dirname, 'public', 'js'),
-    min: path.join(__dirname, 'public', 'min'),
 
     // Set path of all/any of styling options to include them.
     css: path.join(__dirname, 'public', 'css'),

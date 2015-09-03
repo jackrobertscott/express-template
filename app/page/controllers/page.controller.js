@@ -1,7 +1,7 @@
-var config = require('../../config');
+var config = require('../../../config');
 var express = require('express');
 var router = express.Router();
-var Page = require('../models/page');
+var Page = require('../models/page.model');
 var _ = require('lodash');
 
 module.exports = function IndexController(app) {

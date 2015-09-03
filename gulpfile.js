@@ -11,22 +11,13 @@ var browserSync = require('browser-sync').create();
 var reload = browserSync.reload;
 
 gulp.task('default', [
-  'lint',
   'build',
   'serve'
 ]);
 
-gulp.task('lint', function() {
-  return gulp.src([
-      path.join(config.paths.app, '**/*.js'),
-      path.join(config.paths.js, '**/*.js'),
-    ])
-    .pipe(plugins.jshint())
-    .pipe(plugins.jshint.reporter('default'));
-});
-
 gulp.task('build', [
   'clean',
+  'lint',
   'scripts',
   'styles'
 ]);
@@ -35,14 +26,43 @@ gulp.task('clean', function() {
   return del.sync(config.paths.dist);
 });
 
+gulp.task('lint', function() {
+  return gulp.src([
+      path.join(config.paths.app, '**/*.js'),
+      path.join(config.paths.public, '**/*.js'),
+    ])
+    .pipe(plugins.jshint())
+    .pipe(plugins.jshint.reporter('default'));
+});
+
+gulp.task('scripts', function() {
+  return gulp.src([
+      path.join(config.paths.app, '*/scripts/*.js'),
+      path.join(config.paths.public, '**/*.js'),
+    ])
+    .pipe(plugins.concat('main.js'))
+    .pipe(gulp.dest(config.paths.dist))
+    .pipe(plugins.uglify())
+    .pipe(plugins.rename({
+      suffix: '.min'
+    }))
+    .pipe(gulp.dest(config.paths.dist));
+});
+
 gulp.task('styles', function() {
   var stream = mergeStream();
 
   if (config.paths.css) {
-    stream.add(gulp.src(path.join(config.paths.css, '**/*.css')));
+    stream.add(gulp.src([
+      path.join(config.paths.app, '*/styles/*.css'),
+      path.join(config.paths.public, '*/styles/*.css')
+    ]));
   }
   if (config.paths.sass) {
-    stream.add(gulp.src(path.join(config.paths.sass, '**/*.{sass, scss}'))
+    stream.add(gulp.src([
+        path.join(config.paths.styles, '*/styles/*.{sass, scss}'),
+        path.join(config.paths.public, '*/styles/*.{sass, scss}')
+      ])
       .pipe(plugins.plumber(function(error) {
         plugins.util.beep();
         plugins.util.log(error);
@@ -51,7 +71,10 @@ gulp.task('styles', function() {
       .pipe(plugins.sass()));
   }
   if (config.paths.less) {
-    stream.add(gulp.src(path.join(config.paths.less, '**/*.less'))
+    stream.add(gulp.src([
+        path.join(config.paths.styles, '*/styles/*.less'),
+        path.join(config.paths.public, '*/styles/*.less')
+      ])
       .pipe(plugins.plumber(function(error) {
         plugins.util.beep();
         plugins.util.log(error);
@@ -67,17 +90,6 @@ gulp.task('styles', function() {
     .pipe(plugins.concat('style.css'))
     .pipe(gulp.dest(config.paths.dist))
     .pipe(plugins.minifyCss())
-    .pipe(plugins.rename({
-      suffix: '.min'
-    }))
-    .pipe(gulp.dest(config.paths.dist));
-});
-
-gulp.task('scripts', function() {
-  return gulp.src(path.join(config.paths.js, '**/*.js'))
-    .pipe(plugins.concat('main.js'))
-    .pipe(gulp.dest(config.paths.dist))
-    .pipe(plugins.uglify())
     .pipe(plugins.rename({
       suffix: '.min'
     }))
@@ -104,13 +116,7 @@ gulp.task('browser-sync', function() {
 });
 
 gulp.task('watch:styles', function() {
-  var paths = [];
-
-  if (config.paths.css) paths.push(path.join(config.paths.css, '**/*.css'));
-  if (config.paths.sass) paths.push(path.join(config.paths.sass, '**/*.{sass, scss}'));
-  if (config.paths.less) paths.push(path.join(config.paths.less, '**/*.less'));
-
-  gulp.watch(paths, ['styles']);
+  gulp.watch(path.join(config.paths.app, '*/styles/*.{css, sass, scss, less}'), ['styles'], reload);
 });
 
 gulp.task('watch:browser-sync', function() {

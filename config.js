@@ -1,43 +1,58 @@
 var path = require('path');
+var fs = require('fs');
+// set this to root directory
+var baseDir = __dirname;
 
-module.exports = {
-  // Server
+//////////
+// MAIN //
+//////////
+
+var config = module.exports = {
   // Don't set port to 3000 or the browserSync will fail
   port: process.env.PORT || 5000,
-  main: './server.js',
+  main: path.join(baseDir, 'server.js')
+};
 
-  // Paths
-  paths: {
+///////////
+// BUILD //
+///////////
 
-    // App
-    app: path.join(__dirname, 'app'),
-    controllers: path.join(__dirname, 'app', 'controllers'),
-    models: path.join(__dirname, 'app', 'models'),
-    views: path.join(__dirname, 'app', 'views'),
+config.build = {
+  css: true,
+  sass: true,
+  less: true
+};
 
-    // Public
-    public: path.join(__dirname, 'public'),
-    dist: path.join(__dirname, 'public', 'dist'),
-    img: path.join(__dirname, 'public', 'img'),
-    js: path.join(__dirname, 'public', 'js'),
+///////////
+// PATHS //
+///////////
 
-    // Set path of all/any of styling options to include them.
-    css: path.join(__dirname, 'public', 'css'),
-    sass: path.join(__dirname, 'public', 'sass'),
-    //less: path.join(__dirname, 'public', 'less'),
+config.paths = {
+  // App
+  app: path.join(baseDir, 'app'),
+  modules: [
+    path.join(baseDir, 'app', 'base'),
+    path.join(baseDir, 'app', 'blog'),
+    path.join(baseDir, 'app', 'page')
+  ],
 
-    // Dependencies
-    bower_components: path.join(__dirname, 'bower_components'),
+  // Public
+  public: path.join(baseDir, 'public'),
+  dist: path.join(baseDir, 'public', 'dist'),
+  bower_components: path.join(baseDir, 'bower_components')
+};
+
+//////////////
+// FIREBASE //
+//////////////
+
+config.firebase = {
+  entities: {
+    users: 'users',
+    sites: 'sites',
+    posts: 'posts',
+    pages: 'pages'
   },
-
-  firebase: {
-    entities: {
-      users: 'users',
-      sites: 'sites',
-      posts: 'posts',
-      pages: 'pages'
-    },
-    url: 'https://angular-firebase-cms.firebaseio.com',
-    siteId: '-Jvt4vs1lBrZQu--HWFG'
-  }
+  url: 'https://angular-firebase-cms.firebaseio.com',
+  siteId: '-Jvt4vs1lBrZQu--HWFG'
 };

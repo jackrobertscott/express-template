@@ -5,7 +5,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var wrench = require('wrench');
+var fs = require('fs');
 
 // Get express app
 var app = module.exports = express();
@@ -15,8 +15,13 @@ var app = module.exports = express();
 ////////////
 
 // View engine setup
-app.set('views', config.paths.views);
+app.set('views', config.paths.modules.map(function(folder) {
+  return path.join(folder, 'views');
+}));
 app.set('view engine', 'jade');
+app.set('view options', {
+  layout: false
+});
 
 ////////////////
 // MIDDLEWARE //
@@ -39,12 +44,17 @@ app.use(express.static(config.paths.bower_components));
 // CONTROLLERS / ROUTES //
 //////////////////////////
 
-wrench.readdirSyncRecursive(config.paths.controllers)
-  .forEach(function(file) {
-    if ((/\.js$/i).test(file)) {
-      require(path.join(config.paths.controllers, file))(app);
-    }
-  });
+config.paths.modules.forEach(function(folder) {
+  if (!fs.existsSync(path.join(folder, 'controllers'))) return;
+
+  fs.readdirSync(path.join(folder, 'controllers'))
+    .filter(function(file) {
+      return (/\.js$/i).test(file);
+    })
+    .forEach(function(file) {
+      require(path.join(folder, 'controllers', file))(app);
+    });
+});
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {

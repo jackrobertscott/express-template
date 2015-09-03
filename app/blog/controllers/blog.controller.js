@@ -1,7 +1,7 @@
-var config = require('../../config');
+var config = require('../../../config');
 var express = require('express');
 var router = express.Router();
-var Post = require('../models/post');
+var Post = require('../models/post.model');
 var _ = require('lodash');
 
 module.exports = function BlogController(app) {

@@ -50,7 +50,7 @@ gulp.task('styles', function() {
       .pipe(plugins.less().on('error', plugins.util.log)));
   }
 
-  return stream.pipe(plugins.autoprefixer({
+  return stream.isEmpty() ? null : stream.pipe(plugins.autoprefixer({
       browsers: ['last 2 versions'],
       cascade: false
     }))

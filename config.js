@@ -20,10 +20,12 @@ module.exports = {
     tmp: path.join(__dirname, '.tmp'),
     img: path.join(__dirname, 'public', 'img'),
     js: path.join(__dirname, 'public', 'js'),
+    min: path.join(__dirname, 'public', 'min'),
+
+    // Set path of all/any of styling options to include them.
     css: path.join(__dirname, 'public', 'css'),
     sass: path.join(__dirname, 'public', 'sass'),
-    less: path.join(__dirname, 'public', 'less'),
-    min: path.join(__dirname, 'public', 'min'),
+    //less: path.join(__dirname, 'public', 'less'),
 
     // Dependencies
     bower_components: path.join(__dirname, 'bower_components'),

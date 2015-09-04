@@ -1,3 +1,6 @@
+/* jshint node:true */
+'use strict';
+
 var config = require('../../../config/config');
 var Firebase = require('firebase');
 var _ = require('lodash');

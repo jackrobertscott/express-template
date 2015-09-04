@@ -14,16 +14,6 @@ var config = module.exports = {
 };
 
 ///////////
-// BUILD //
-///////////
-
-config.build = {
-  css: true,
-  sass: true,
-  less: true
-};
-
-///////////
 // PATHS //
 ///////////
 
@@ -38,8 +28,48 @@ config.paths = {
 
   // Public
   public: path.join(baseDir, 'public'),
-  dist: path.join(baseDir, 'public', 'dist'),
   bower_components: path.join(baseDir, 'bower_components')
+};
+
+//////////
+// GULP //
+//////////
+
+config.gulp = {
+  dist: path.join(config.paths.public, 'dist'),
+  lint: {
+    js: [
+      path.join(config.paths.app, '**/*.js')
+    ]
+  },
+  nodemon: {
+    ext: 'js'
+  },
+  views: {
+    jade: [
+      path.join(config.paths.app, '*/views/**/*.jade')
+    ]
+  },
+  scripts: { // client scripts
+    js: [
+      path.join(config.paths.app, '*/scripts/**/*.js')
+    ],
+    file: 'scripts.js',
+    min: 'scripts.min.js'
+  },
+  styles: {
+    css: [
+      path.join(config.paths.app, '*/styles/**/*.css')
+    ],
+    sass: [
+      path.join(config.paths.app, '*/styles/**/*.{sass,scss}')
+    ],
+    // less: [
+    //   path.join(config.paths.app, '*/styles/**/*.less')
+    // ],
+    file: 'styles.css',
+    min: 'styles.min.css'
+  }
 };
 
 //////////////

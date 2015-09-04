@@ -21,10 +21,8 @@ var app = module.exports = express();
 app.set('views', config.paths.modules.map(function(folder) {
   return path.join(folder, 'views');
 }));
-app.set('view engine', 'jade');
-app.set('view options', {
-  layout: false
-});
+app.set('view engine', config.view.engine);
+app.set('view options', config.view.options);
 
 ////////////////
 // MIDDLEWARE //

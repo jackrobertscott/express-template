@@ -13,7 +13,13 @@ var baseDir = path.join(__dirname, '..');
 var config = module.exports = {
   // Don't set port to 3000 or the browserSync will fail
   port: process.env.PORT || 5000,
-  main: path.join(baseDir, 'server.js')
+  main: path.join(baseDir, 'server.js'),
+  view: {
+    engine: 'jade',
+    options: {
+      layout: false
+    }
+  }
 };
 
 /**

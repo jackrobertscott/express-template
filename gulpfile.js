@@ -1,7 +1,7 @@
 /* jshint node:true */
 'use strict';
 
-var config = require('./config');
+var config = require('./config/config');
 var path = require('path');
 var _ = require('lodash');
 var gulp = require('gulp');

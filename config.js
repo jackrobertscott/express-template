@@ -43,7 +43,12 @@ config.gulp = {
     ]
   },
   nodemon: {
-    ext: 'js'
+    ext: 'js',
+    ignore: [
+      path.join(config.paths.public, 'dist'),
+      path.join(baseDir, 'node_modules'),
+      path.join(baseDir, 'bower_components')
+    ]
   },
   views: {
     jade: [

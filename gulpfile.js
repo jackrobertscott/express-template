@@ -100,9 +100,7 @@ gulp.task('nodemon', function(cb) {
   plugins.nodemon({
       script: config.main,
       ext: config.gulp.nodemon.ext,
-      ignore: [
-        config.gulp.dist
-      ]
+      ignore: config.gulp.nodemon.ignore
     })
     .on('start', function() {
       if (!called) {

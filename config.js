@@ -18,17 +18,17 @@ var config = module.exports = {
 ///////////
 
 config.paths = {
-  // App
   app: path.join(baseDir, 'app'),
+  public: path.join(baseDir, 'public'),
+  bower_components: path.join(baseDir, 'bower_components'),
+  node_modules: path.join(baseDir, 'node_modules'),
+
+  // App modules
   modules: [
     path.join(baseDir, 'app', 'base'),
     path.join(baseDir, 'app', 'blog'),
     path.join(baseDir, 'app', 'page')
-  ],
-
-  // Public
-  public: path.join(baseDir, 'public'),
-  bower_components: path.join(baseDir, 'bower_components')
+  ]
 };
 
 //////////
@@ -42,39 +42,42 @@ config.gulp = {
       path.join(config.paths.app, '**/*.js')
     ]
   },
-  nodemon: {
-    ext: 'js',
-    ignore: [
-      path.join(config.paths.public, 'dist'),
-      path.join(baseDir, 'node_modules'),
-      path.join(baseDir, 'bower_components')
-    ]
-  },
   views: {
-    jade: [
-      path.join(config.paths.app, '*/views/**/*.jade')
-    ]
+    jade: config.paths.modules.map(function(folder) {
+      return path.join(folder, 'views', '**/*.jade');
+    })
   },
   scripts: { // client scripts
-    js: [
-      path.join(config.paths.app, '*/scripts/**/*.js')
-    ],
+    js: config.paths.modules.map(function(folder) {
+      return path.join(folder, 'scripts', '**/*.js');
+    }),
     file: 'scripts.js',
     min: 'scripts.min.js'
   },
   styles: {
-    css: [
-      path.join(config.paths.app, '*/styles/**/*.css')
-    ],
-    sass: [
-      path.join(config.paths.app, '*/styles/**/*.{sass,scss}')
-    ],
-    // less: [
-    //   path.join(config.paths.app, '*/styles/**/*.less')
-    // ],
+    css: config.paths.modules.map(function(folder) {
+      return path.join(folder, 'styles', '**/*.css');
+    }),
+    sass: config.paths.modules.map(function(folder) {
+      return path.join(folder, 'styles', '**/*.{sass,scss}');
+    }),
+    // less: config.paths.modules.map(function(folder) {
+    //   return path.join(folder, 'styles', '**/*.less');
+    // }),
     file: 'styles.css',
     min: 'styles.min.css'
   }
+};
+
+config.gulp.nodemon = {
+  ext: 'js',
+  ignore: [
+    config.gulp.dist,
+    config.paths.node_modules,
+    config.paths.bower_components
+  ].concat(config.paths.modules.map(function(folder) {
+    return path.join(folder, 'scripts');
+  }))
 };
 
 //////////////

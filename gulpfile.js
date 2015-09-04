@@ -81,7 +81,6 @@ gulp.task('styles', function() {
 
 gulp.task('serve', [
   'browser-sync',
-  'watch:nodemon',
   'watch:scripts',
   'watch:styles',
   'watch:views'
@@ -89,9 +88,7 @@ gulp.task('serve', [
 
 gulp.task('browser-sync', ['nodemon'], function() {
   browserSync.init({
-    proxy: 'localhost:' + config.port,
-    // Make sure browser sync not on same port as proxy
-    // port: (isNaN(config.port)) ? 3000 : Number(config.port) + 1000
+    proxy: 'localhost:' + config.port
   });
 });
 
@@ -107,26 +104,27 @@ gulp.task('nodemon', function(cb) {
         called = true;
         cb();
       }
+    })
+    .on('restart', function() {
+      // let nodemon finish before browser reload
+      setTimeout(reload, 2000);
     });
 });
 
-gulp.task('watch:nodemon', function() {
-  gulp.watch(path.join(config.paths.app, '**/*.js'), function() {
-    setTimeout(reload, 2000);
-  });
-});
-
 gulp.task('watch:scripts', function() {
-  gulp.watch(config.gulp.scripts.js, ['scripts']);
+  gulp.watch(config.gulp.scripts.js, function() {
+    runSequence('scripts', reload);
+  });
 });
 
 gulp.task('watch:styles', function() {
   gulp.watch(_.union(
-      config.gulp.styles.css,
-      config.gulp.styles.sass,
-      config.gulp.styles.less
-    ), ['styles'])
-    .on('change', reload);
+    config.gulp.styles.css,
+    config.gulp.styles.sass,
+    config.gulp.styles.less
+  ), function() {
+    runSequence('styles', reload);
+  });
 });
 
 gulp.task('watch:views', function() {

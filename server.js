@@ -1,10 +1,11 @@
 #!/usr/bin/env node
-var app = require('../app/app');
+var config = require('./config/config');
+var app = require('./app/app');
 var debug = require('debug')('express-template:server');
 var http = require('http');
 
 // Get port from environment and store in Express
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(config.port);
 app.set('port', port);
 
 // Create server

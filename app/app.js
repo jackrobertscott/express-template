@@ -1,11 +1,14 @@
-var config = require('../config');
+/* jshint node:true */
+'use strict';
+
+var config = require('../config/config');
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var lessMiddleware = require('less-middleware');
+var fs = require('fs');
 
 // Get express app
 var app = module.exports = express();
@@ -14,9 +17,13 @@ var app = module.exports = express();
 // CONFIG //
 ////////////
 
-// View engine setup
-app.set('views', config.paths.views);
-app.set('view engine', 'jade');
+// Load view folders within each module
+app.set('views', config.paths.modules.map(function(folder) {
+  return path.join(folder, 'views');
+}));
+
+app.set('view engine', config.view.engine);
+app.set('view options', config.view.options);
 
 ////////////////
 // MIDDLEWARE //
@@ -27,18 +34,31 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: false,
 }));
 app.use(cookieParser());
-app.use(lessMiddleware(config.paths.public));
+
+// Load static files
 app.use(express.static(config.paths.public));
+app.use(express.static(config.paths.bowerComponents));
 
-////////////
-// ROUTES //
-////////////
+//////////////////////////
+// CONTROLLERS / ROUTES //
+//////////////////////////
 
-app.use('/', require('./controllers/index'));
-app.use('/users', require('./controllers/users'));
+// load in the controllers from each module
+config.paths.modules.forEach(function(folder) {
+  if (!fs.existsSync(path.join(folder, 'controllers'))) return;
+
+  // Check the module is a '*.js' file then require
+  fs.readdirSync(path.join(folder, 'controllers'))
+    .filter(function(file) {
+      return (/\.js$/i).test(file);
+    })
+    .forEach(function(file) {
+      require(path.join(folder, 'controllers', file))(app);
+    });
+});
 
 // Catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -57,7 +77,7 @@ if (app.get('env') === 'development') {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
-      error: err
+      error: err,
     });
   });
 }
@@ -67,6 +87,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
-    error: {}
+    error: {},
   });
 });

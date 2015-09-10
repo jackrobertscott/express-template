@@ -1,0 +1,8 @@
+extends ../../base/views/base
+
+block content
+  ul
+    each post in posts
+      li
+        h1= post.title
+        p= post.body

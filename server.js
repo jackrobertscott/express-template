@@ -4,8 +4,9 @@ var app = require('./app/app');
 var debug = require('debug')('express-template:server');
 var http = require('http');
 
-// Get port from environment and store in Express
 var port = normalizePort(config.port);
+
+// Get port from environment and store in Express
 app.set('port', port);
 
 // Create server
@@ -20,13 +21,13 @@ server.on('listening', onListening);
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
+  // named pipe
   if (isNaN(port)) {
-    // named pipe
     return val;
   }
 
+  // port number
   if (port >= 0) {
-    // port number
     return port;
   }
 
@@ -39,7 +40,7 @@ function onError(error) {
     throw error;
   }
 
-  var bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+  var bind = (typeof port === 'string') ? 'Pipe ' + port : 'Port ' + port;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {

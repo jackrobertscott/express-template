@@ -2,6 +2,12 @@
 
 A template built with express for website development.
 
+### Install
+
+1. Clone project to computer.
+2. Run `npm install` (assuming nodejs is installed).
+3. Run `bower install` (assuming bower is installed).
+
 ### App Structure
 
 ```

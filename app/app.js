@@ -17,10 +17,11 @@ var app = module.exports = express();
 // CONFIG //
 ////////////
 
-// View engine setup
+// Load view folders within each module
 app.set('views', config.paths.modules.map(function(folder) {
   return path.join(folder, 'views');
 }));
+
 app.set('view engine', config.view.engine);
 app.set('view options', config.view.options);
 
@@ -33,21 +34,23 @@ app.set('view options', config.view.options);
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: false,
 }));
 app.use(cookieParser());
 
 // Load static files
 app.use(express.static(config.paths.public));
-app.use(express.static(config.paths.bower_components));
+app.use(express.static(config.paths.bowerComponents));
 
 //////////////////////////
 // CONTROLLERS / ROUTES //
 //////////////////////////
 
+// load in the controllers from each module
 config.paths.modules.forEach(function(folder) {
   if (!fs.existsSync(path.join(folder, 'controllers'))) return;
 
+  // Check the module is a '*.js' file then require
   fs.readdirSync(path.join(folder, 'controllers'))
     .filter(function(file) {
       return (/\.js$/i).test(file);
@@ -74,7 +77,7 @@ if (app.get('env') === 'development') {
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
-      error: err
+      error: err,
     });
   });
 }
@@ -84,6 +87,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
-    error: {}
+    error: {},
   });
 });

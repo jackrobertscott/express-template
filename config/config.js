@@ -17,9 +17,9 @@ var config = module.exports = {
   view: {
     engine: 'jade',
     options: {
-      layout: false
-    }
-  }
+      layout: false,
+    },
+  },
 };
 
 /**
@@ -28,15 +28,15 @@ var config = module.exports = {
 config.paths = {
   app: path.join(baseDir, 'app'),
   public: path.join(baseDir, 'public'),
-  bower_components: path.join(baseDir, 'bower_components'),
-  node_modules: path.join(baseDir, 'node_modules'),
+  bowerComponents: path.join(baseDir, 'bower_components'),
+  nodeModules: path.join(baseDir, 'node_modules'),
 
   // App modules
   modules: [
     path.join(baseDir, 'app', 'base'),
     path.join(baseDir, 'app', 'blog'),
-    path.join(baseDir, 'app', 'page')
-  ]
+    path.join(baseDir, 'app', 'page'),
+  ],
 };
 
 /**

@@ -9,9 +9,9 @@ module.exports = function(config) {
       users: 'users',
       sites: 'sites',
       posts: 'posts',
-      pages: 'pages'
+      pages: 'pages',
     },
     url: 'https://angular-firebase-cms.firebaseio.com',
-    siteId: '-Jvt4vs1lBrZQu--HWFG'
+    siteId: '-Jvt4vs1lBrZQu--HWFG',
   };
 };

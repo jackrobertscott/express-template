@@ -12,29 +12,34 @@ module.exports = function(config) {
       ],
     },
     views: {
-      jade: config.paths.modules.map(function(folder) {
-        return path.join(folder, 'views', '**/*.jade');
+      jade: config.paths.modules.map(function(mod) {
+        var subdir = mod.views || 'views';
+        return path.join(mod.dir, subdir, '**/*.jade');
       }),
     },
     scripts: { // client scripts
-      js: config.paths.modules.map(function(folder) {
-        return path.join(folder, 'scripts', '**/*.js');
+      js: config.paths.modules.map(function(mod) {
+        var subdir = mod.scripts || 'scripts';
+        return path.join(mod.dir, subdir, '**/*.js');
       }),
 
       file: 'scripts.js',
       min: 'scripts.min.js',
     },
     styles: {
-      css: config.paths.modules.map(function(folder) {
-        return path.join(folder, 'styles', '**/*.css');
+      css: config.paths.modules.map(function(mod) {
+        var subdir = mod.styles || 'styles';
+        return path.join(mod.dir, subdir, '**/*.css');
       }),
 
-      sass: config.paths.modules.map(function(folder) {
-        return path.join(folder, 'styles', '**/*.{sass,scss}');
+      sass: config.paths.modules.map(function(mod) {
+        var subdir = mod.styles || 'styles';
+        return path.join(mod.dir, subdir, '**/*.{sass,scss}');
       }),
 
-      // less: config.paths.modules.map(function(folder) {
-      //   return path.join(folder, 'styles', '**/*.less');
+      // less: config.paths.modules.map(function(mod) {
+      //   var subdir = mod.styles || 'styles';
+      //   return path.join(mod.dir, subdir, '**/*.less');
       // }),
 
       file: 'styles.css',

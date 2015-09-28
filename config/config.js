@@ -32,11 +32,13 @@ config.paths = {
   nodeModules: path.join(baseDir, 'node_modules'),
 
   // App modules
-  modules: [
-    path.join(baseDir, 'app', 'base'),
-    path.join(baseDir, 'app', 'blog'),
-    path.join(baseDir, 'app', 'page'),
-  ],
+  modules: [{
+    dir: path.join(baseDir, 'app', 'base'),
+  }, {
+    dir: path.join(baseDir, 'app', 'blog'),
+  }, {
+    dir: path.join(baseDir, 'app', 'page'),
+  }, ],
 };
 
 /**

@@ -18,8 +18,8 @@ var app = module.exports = express();
 ////////////
 
 // Load view folders within each module
-app.set('views', config.paths.modules.map(function(folder) {
-  return path.join(folder, 'views');
+app.set('views', config.paths.modules.map(function(mod) {
+  return path.join(mod.dir, 'views');
 }));
 
 app.set('view engine', config.view.engine);
@@ -47,16 +47,16 @@ app.use(express.static(config.paths.bowerComponents));
 //////////////////////////
 
 // load in the controllers from each module
-config.paths.modules.forEach(function(folder) {
-  if (!fs.existsSync(path.join(folder, 'controllers'))) return;
+config.paths.modules.forEach(function(mod) {
+  if (!fs.existsSync(path.join(mod.dir, 'controllers'))) return;
 
   // Check the module is a '*.js' file then require
-  fs.readdirSync(path.join(folder, 'controllers'))
+  fs.readdirSync(path.join(mod.dir, 'controllers'))
     .filter(function(file) {
       return (/\.js$/i).test(file);
     })
     .forEach(function(file) {
-      require(path.join(folder, 'controllers', file))(app);
+      require(path.join(mod.dir, 'controllers', file))(app);
     });
 });
 

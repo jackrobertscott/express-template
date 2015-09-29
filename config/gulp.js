@@ -12,34 +12,27 @@ module.exports = function(config) {
       ],
     },
     views: {
-      jade: config.paths.modules.map(function(mod) {
-        var subdir = mod.views || 'views';
-        return path.join(mod.dir, subdir, '**/*.jade');
+      jade: config.paths.modules.views.map(function(views) {
+        return path.join(views, '**/*.jade');
       }),
     },
     scripts: { // client scripts
-      js: config.paths.modules.map(function(mod) {
-        var subdir = mod.scripts || 'scripts';
-        return path.join(mod.dir, subdir, '**/*.js');
+      js: config.paths.modules.scripts.map(function(scripts) {
+        return path.join(scripts, '**/*.js');
       }),
 
       file: 'scripts.js',
       min: 'scripts.min.js',
     },
     styles: {
-      css: config.paths.modules.map(function(mod) {
-        var subdir = mod.styles || 'styles';
-        return path.join(mod.dir, subdir, '**/*.css');
+      css: config.paths.modules.styles.map(function(styles) {
+        return path.join(styles, '**/*.css');
       }),
-
-      sass: config.paths.modules.map(function(mod) {
-        var subdir = mod.styles || 'styles';
-        return path.join(mod.dir, subdir, '**/*.{sass,scss}');
+      sass: config.paths.modules.styles.map(function(styles) {
+        return path.join(styles, '**/*.{sass,scss}');
       }),
-
-      // less: config.paths.modules.map(function(mod) {
-      //   var subdir = mod.styles || 'styles';
-      //   return path.join(mod.dir, subdir, '**/*.less');
+      // less: config.paths.modules.styles.map(function(styles) {
+      //   return path.join(styles, '**/*.less');
       // }),
 
       file: 'styles.css',
@@ -53,8 +46,6 @@ module.exports = function(config) {
       config.gulp.dist,
       config.paths.nodeModules,
       config.paths.bowerComponents,
-    ].concat(config.paths.modules.map(function(folder) {
-      return path.join(folder, 'scripts');
-    })),
+    ].concat(config.paths.modules.scripts),
   };
 };

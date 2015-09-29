@@ -87,9 +87,11 @@ gulp.task('serve', [
 ]);
 
 gulp.task('browser-sync', ['nodemon'], function() {
-  browserSync.init({
-    proxy: 'localhost:' + config.port
-  });
+  setTimeout(function() {
+    browserSync.init({
+      proxy: 'localhost:' + config.port
+    });
+  }, 2000);
 });
 
 gulp.task('nodemon', function(cb) {

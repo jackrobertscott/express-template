@@ -13,21 +13,10 @@ var fs = require('fs');
 // Get express app
 var app = module.exports = express();
 
-////////////
-// CONFIG //
-////////////
-
 // Load view folders within each module
-app.set('views', config.paths.modules.map(function(mod) {
-  return path.join(mod.dir, 'views');
-}));
-
+app.set('views', config.paths.modules.views);
 app.set('view engine', config.view.engine);
 app.set('view options', config.view.options);
-
-////////////////
-// MIDDLEWARE //
-////////////////
 
 // Uncomment after placing your favicon in /public
 //app.use(favicon(path.join(config.paths.public, 'favicon.ico')));
@@ -42,34 +31,26 @@ app.use(cookieParser());
 app.use(express.static(config.paths.public));
 app.use(express.static(config.paths.bowerComponents));
 
-//////////////////////////
-// CONTROLLERS / ROUTES //
-//////////////////////////
-
 // load in the controllers from each module
-config.paths.modules.forEach(function(mod) {
-  if (!fs.existsSync(path.join(mod.dir, 'controllers'))) return;
+config.paths.modules.controllers.forEach(function(controller) {
+  if (!fs.existsSync(controller)) return;
 
   // Check the module is a '*.js' file then require
-  fs.readdirSync(path.join(mod.dir, 'controllers'))
+  fs.readdirSync(controller)
     .filter(function(file) {
       return (/\.js$/i).test(file);
     })
     .forEach(function(file) {
-      require(path.join(mod.dir, 'controllers', file))(app);
+      require(path.join(controller, file))(app);
     });
 });
 
-// Catch 404 and forward to error handler
+// No route matched; catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
-
-////////////
-// ERRORS //
-////////////
 
 // Development error handler, will print stacktrace
 if (app.get('env') === 'development') {
